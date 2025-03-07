@@ -1,0 +1,176 @@
+<?php
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/img.css">
+    <title>MPICO | 노즐 모니터링 시스템</title>
+</head>
+
+<body>
+    <div class="overlay"></div>
+    <div class="clone-img"></div>
+
+    <header>
+        <h2 style='color:white;'>MPICO</h2>
+        <!-- <a href="/index.html"><img class="img_logo" src="/img/logo.png" alt=""></a> -->
+        <nav>
+            <ul class="menu">
+                <li><a class="menu1" href="/index.html">홈</a></li>
+                <li><a class="menu2 active" href="/img.html">이미지</a></li>
+                <li><a class="menu3" href="/data.html">데이터</a></li>
+                <li><a class="menu4" href="/graph.html">그래프</a></li>
+                <div class="cursor"></div>
+            </ul>
+        </nav>
+    </header>
+
+    <section>
+        <form class="form" method='POST' action="/img.html" target="_self">
+            <?php
+            if ($_SESSION['date1'] == null) {
+                $_SESSION['date1'] = date('Y-m-d');
+            }
+
+            if ($_SESSION['date2'] == null) {
+                $_SESSION['date2'] = date('Y-m-d');
+            }
+            ?>
+            <div class="set">
+                <!-- 최근순, 오래된 순 구분하기 위해 -->
+                <?php
+                if ($_POST['sorting_sql'] == '최근순') {
+                    $menu1 = "menu_select";
+                    $menu2 = "";
+                    $sorting_sql = "order by id desc";
+                } else if ($_POST['sorting_sql'] == '오래된순') {
+                    $menu1 = "";
+                    $menu2 = "menu_select";
+                    $sorting_sql = "order by id asc";
+                } else {
+                    $menu1 = "menu_select";
+                    $menu2 = "";
+                    $sorting_sql = "order by id desc";
+                }
+
+                if ($_POST['sorting_date'] == '검색') {
+                    $_SESSION['date1'] = $_POST['date1'];
+                    $_SESSION['date2'] = $_POST['date2'];
+                } else if ($_POST['sorting_date'] == '오늘') {
+                    $_SESSION['date1'] = date('Y-m-d');
+                    $_SESSION['date2'] = date('Y-m-d');
+                }
+                ?>
+                <input type='submit' name='sorting_sql' class="sorting <?php echo $menu1; ?>" value='최근순'>
+                <input type='submit' name='sorting_sql' class="sorting <?php echo $menu2; ?>" value='오래된순'>
+                <div class="search">
+                    <input type="date" class="date" name="date1" value="<?php
+                                                                        if ($_SESSION['date1'] != null) {
+                                                                            $date1 = $_SESSION['date1'];
+                                                                            echo $date1;
+                                                                        } else {
+                                                                            echo date('Y-m-d');
+                                                                        }
+                                                                        ?>">
+                    <span class="date_between">&nbsp;&nbsp;~&nbsp;&nbsp;</span>
+                    <input type="date" class="date" name="date2" value="<?php
+                                                                        if ($_SESSION['date2'] != null) {
+                                                                            $date2 = $_SESSION['date2'];
+                                                                            echo $date2;
+                                                                        } else {
+                                                                            echo date('Y-m-d');
+                                                                        }
+                                                                        ?>">
+                    <input type='submit' name='sorting_date' class="btn_search" value="검색">
+                    <input type='submit' name='sorting_date' class="btn_today" value="오늘">
+                </div>
+            </div>
+            <div class="container">
+                <ul class="img_list">
+                    <?php
+                    $date_rep1 = str_replace("-", "", $date1);
+                    $date_rep2 = str_replace("-", "", $date2);
+                    // 오래된 날짜부터 정렬
+                    // for ($i = $date_rep1; $i <= $date_rep2; $i++) {
+                    //최근 날짜부터 정렬
+                    for ($i = $date_rep2; $i >= $date_rep1; $i--) {
+                        $year       = substr($i, 0, 4);
+                        $month = substr($i, 4, 2);
+                        $day     = substr($i, 6, 2);
+                        if (checkdate($month, $day, $year)) {
+                            $date[] = $year . "-" . $month . "-" . $day;
+                        }
+                    }
+
+                    for ($count = 0; $count <= ((strtotime($date2) - strtotime($date1)) / 86400); $count++) {
+                        $sql = "select * from result1 where date ='" . $date[$count] . "' " . $sorting_sql . "";
+                        $res = mysqli_query($conn, $sql);
+                        $row = mysqli_fetch_array($res);
+                        if ($row['date'] != null) {
+                            echo "<div class='date_box'>" . $row['date'] . "</div>";
+                            echo $sql01 = "select * from result1 where date ='" . $row['date'] . "' " . $sorting_sql . "";
+                            $res01 = mysqli_query($conn, $sql01);
+                            echo "<div class='img_container'>";
+                            for ($i = 1; $row01 = mysqli_fetch_array($res01); $i++) {
+                                if ($row01['conclusion1'] == '1') {
+                                    $result = "<div style='width:20px; height:20px; border-radius:50%; background:green;'></div>";
+                                } else {
+                                    $result = "<div style='width:20px; height:20px; border-radius:50%; background:red;'></div>";
+                                }
+
+                                echo "<div class='img_box'>";
+                                echo "<img class='img' src='http://e-company.co.kr:5000/" . $row01['img_name'] . "' loading='lazy' alt=''>";
+                                echo "<div class='text_result'>" . $result . "</div>";
+                                echo "  <div class='middle'>
+                                            <div class='text_time'>" . $row01['time'] . "</div>
+                                            <div class='text'>보기</div>
+                                        </div>";
+                                echo "</div>";
+                            }
+                            echo "</div>";
+                        }
+                    }
+                    ?>
+                </ul>
+            </div>
+        </form>
+
+        <a class="btn_gotop" href="/img.html">TOP</a>
+    </section>
+
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+    <script type="text/javascript">
+        // 마우스커서 색반전
+        const $cursor = document.querySelector('.cursor');
+        document.addEventListener('mousemove', function(e) {
+            $cursor.style.left = e.clientX + 'px';
+            $cursor.style.top = e.clientY + 'px';
+        });
+
+        //
+        $(".text").on("click", function(e) {
+            $('.overlay').css('display', 'block');
+            $(this).parents().parents().children('.img').clone().appendTo('.clone-img');
+            $('.clone-img').css('display', 'block');
+        });
+
+        $(".overlay").on("click", function(e) {
+            $('.clone-img').empty();
+            $('.overlay').css('display', 'none');
+        });
+    </script>
+</body>
+</body>
+
+</html>

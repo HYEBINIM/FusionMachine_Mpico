@@ -1,0 +1,233 @@
+<meta charset="UTF-8">
+
+<?
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+header("Content-type: application/vnd.ms-excel");
+header("Content-type: application/vnd.ms-excel; charset=utf-8");
+header("Content-Disposition: attachment; filename = inspection.xls");
+header("Content-Description: PHP4 Generated Data");
+
+if ($_SESSION['sorting_sql'] == '최근순') {
+    $sorting_sql = "order by id desc";
+} else if ($_SESSION['sorting_sql'] == '오래된순') {
+    $sorting_sql = "order by id asc";
+} else {
+    $sorting_sql = "order by id desc";
+}
+
+echo "
+<table border='1' style='border-collapse: collapse;'>
+<tr bgcolor='#EAEAEA'>
+                                <td>번호</td>
+                                <td>날짜</td>
+                                <td>시간</td>
+                                <td>작업자</td>
+                                <td>제품명</td>
+                                <td>LVDT1</td>
+                                <td>LVDT2</td>
+                                <td>LVDT3</td>
+                                <td>LVDT4</td>
+                                <td>LVDT판정</td>
+                                <td>홀판정</td>
+                                <td>리크판정</td>
+                                <td>합격여부</td>
+		        <td>검사가능수량</td>
+                                <td>CT</td>
+</tr>
+";
+//기본 형태 갖추기
+
+//테이블 데이터
+$sql03 = "select * from result1 where date >='" . $_SESSION['date1'] . "' and date <='" . $_SESSION['date2'] . "' " . $sorting_sql . "";
+$res03 = mysqli_query($conn, $sql03);
+
+//2. 값이 있는지 없는지 확인한다
+if ($res03->num_rows > 0) {
+    // 값이 있을 때 실행할 내용
+    for ($count = 1; $row03 = mysqli_fetch_array($res03); $count++) {
+
+        //유저이름 가져오기
+        $sql05 = "select * from user where card_id='" . $row03['mc_code'] . "'";
+        $res05 = mysqli_query($conn, $sql05);
+        $row05 = mysqli_fetch_array($res05);
+
+        if ($row05['user_name'] == '') {
+            $res_user_name = '알수없음';
+        } else {
+            $res_user_name = $row05['user_name'];
+        }
+
+        if ($row03['date'] == '') {
+            $res_date = '';
+        } else {
+            $res_date = $row03['date'];
+        }
+
+        if ($row03['time'] == '') {
+            $res_time = '';
+        } else {
+            $res_time = $row03['time'];
+        }
+
+        			if ($row03['contents'] == '') {
+                                        $res_contents = 'ㅡ';
+                                    } else if ($row03['contents'] == 'MASTER SET') {
+                                        $res_contents = "<div class='contents_master'>마스터 등록 완료</div>";
+                                    } else if ($row03['contents'] == 'USER CHANGE' && $row03['mc_num'] == '9249') {
+                                        $res_contents = "<div class='contents_normal'>시스템 ON</div>";
+                                    } else if ($row03['contents'] == 'USER CHANGE') {
+                                        $res_contents = "<div class='contents_normal'>※ 작업자 변경</div>";
+                                    } else if ($row03['contents'] == 'ERR_100') {
+                                        $res_contents = "<div class='contents_error'>[경고] 에어리어 손동작 감지 </div>";
+                                    } else if ($row03['contents'] == 'ERR_101') {
+                                        $res_contents = "<div class='contents_error'>[경고] 제품 안착 불량</div>";
+                                    } else if ($row03['contents'] == 'ERR_102') {
+                                        $res_contents = "<div class='contents_error'>[경고] 초기 위치 불량</div>";
+                                    } else if ($row03['contents'] == 'ERR_103') {
+                                        $res_contents = "<div class='contents_error'>[경고] 마스터 재등록 필요</div>";
+                                    } else if ($row03['contents'] == 'ERR_104') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_105') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_106') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_107') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_108') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_109') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_110') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'DATA') {
+                                        $res_contents = "<div class='contents_data'>검사</div>";
+                                    } else {
+                                        $res_contents = $row03['contents'];
+                                    }
+
+        if ($row03['data1'] == '') {
+            $res_data1 = '';
+        } else {
+            $res_data1 = $row03['data1'];
+        }
+
+        if ($row03['data2'] == '') {
+            $res_data2 = '';
+        } else {
+            $res_data2 = $row03['data2'];
+        }
+
+        if ($row03['data3'] == '') {
+            $res_data3 = '';
+        } else {
+            $res_data3 = $row03['data3'];
+        }
+
+        if ($row03['data4'] == '') {
+            $res_data4 = '';
+        } else {
+            $res_data4 = $row03['data4'];
+        }
+        //LVDT검사
+        if ($row03['data5'] == '1') {
+            $res_data5 = "<div class='badge_ok'>합격</div>";
+        } else if ($row03['data5'] == '') {
+            $res_data5 = "<div class='badge_no'>검사X</div>";
+        } else {
+            $res_data5 = "<div class='badge_ng'>불합격</div>";
+        }
+        //홀검사
+        if ($row03['data6'] == '1') {
+            $res_data6 = "<div class='badge_ok'>합격</div>";
+        } else if ($row03['data6'] == '') {
+            $res_data6 = "<div class='badge_no'>검사X</div>";
+        } else {
+            $res_data6 = "<div class='badge_ng'>불합격</div>";
+        }
+        //리크검사
+        if ($row03['data7'] == '1') {
+            $res_data7 = "<div class='badge_ok'>합격</div>";
+        } else if ($row03['data7'] == '') {
+            $res_data7 = "<div class='badge_no'>검사X</div>";
+        } else {
+            $res_data7 = "<div class='badge_ng'>불합격</div>";
+        }
+        //합격검사
+        if ($row03['conclusion1'] == '1') {
+            $res_conclusion1 = "<div class='badge_ok'>합격</div>";
+        } else if ($row03['conclusion1'] == '') {
+            $res_conclusion1 = "<div class='badge_no'>검사X</div>";
+        } else {
+            $res_conclusion1 = "<div class='badge_ng'>불합격</div>";
+        }
+
+	        //마스터 주기
+                    if ($row03['data8'] == '') {
+                        $mcount = "0";
+                    } else {
+                        $mcount = $row03['data8'];
+                    }
+
+        if ($row03['ct1'] == '') {
+            $res_ct1 = '없음';
+        } else {
+            $res_ct1 = $row03['ct1'];
+        }
+
+
+        if ($row03['data1'] == NULL && $row03['data2'] == NULL && $row03['data3'] == NULL && $row03['data4'] == NULL) {
+            echo "
+                                        <tr class='row'>
+                                            <td class='row_item thin'>" . $count . "</td>
+                                            <td class='row_item thin'>" . $res_date . "</td>
+                                            <td class='row_item thin'>" . $res_time . "</td>
+                                            <td class='row_item thin'>" . $res_user_name . "</td>
+                                            <td class='row_item thin'>" . $res_contents . "</td>
+                                            <td class='row_item bold'>" . $res_data1 . "</td>
+                                            <td class='row_item bold'>" . $res_data2 . "</td>
+                                            <td class='row_item bold'>" . $res_data3 . "</td>
+                                            <td class='row_item bold'>" . $res_data4 . "</td>
+                                            <td class='row_item thin'>" . $res_data5 . "</td>
+                                            <td class='row_item thin'>" . $res_data6 . "</td>
+                                            <td class='row_item thin'>" . $res_data7 . "</td>
+                                            <td class='row_item thin'>" . $res_conclusion1 . "</td>
+				<td class='row_item thin'>" . $mcount . "</td>
+                                            <td class='row_item thin'>" . $res_ct1 . "</td>
+                                        </tr>
+                                        ";
+        } else {
+            echo "
+                                        <tr class='row'>
+                                            <td class='row_item thin'>" . $count . "</td>
+                                            <td class='row_item thin'>" . $res_date . "</td>
+                                            <td class='row_item thin'>" . $res_time . "</td>
+                                            <td class='row_item thin'>" . $res_user_name . "</td>
+                                            <td class='row_item thin'>" . $res_contents . "</td>
+                                            <td class='row_item bold'>" . $res_data1 . "</td>
+                                            <td class='row_item bold'>" . $res_data2 . "</td>
+                                            <td class='row_item bold'>" . $res_data3 . "</td>
+                                            <td class='row_item bold'>" . $res_data4 . "</td>
+                                            <td class='row_item thin'>" . $res_data5 . "</td>
+                                            <td class='row_item thin'>" . $res_data6 . "</td>
+                                            <td class='row_item thin'>" . $res_data7 . "</td>
+                                            <td class='row_item thin'>" . $res_conclusion1 . "</td>
+				<td class='row_item thin'>" . $mcount . "</td>
+                                            <td class='row_item thin'>" . $res_ct1 . "</td>
+                                        </tr>
+                                        ";
+        }
+    }
+} else {
+    // 값이 없을 때 실행할 내용
+    echo "
+                                    <tr class='row_none'>
+                                    <td>결과값이 없습니다.</td>
+                                    </tr>
+                                    ";
+}
+
+
+echo "</table>";
+mysqli_close($conn);    // 종료
+?>

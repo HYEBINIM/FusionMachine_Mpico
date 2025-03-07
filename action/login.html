@@ -1,0 +1,105 @@
+<?php session_start(); ?>
+
+<?php $conn = new mysqli("localhost", "server", "00000000", "dataset");
+
+if (($_POST['user_id'] != null) && ($_POST['user_pw'] != null)) {
+    $sql = "select * from user where user_id = '" . $_POST['user_id'] . "' and user_pw = '" . $_POST['user_pw'] . "'";
+    $res = mysqli_query($conn, $sql);
+    $row = mysqli_fetch_array($res);
+
+    if (($row['user_id'] == $_POST['user_id']) && ($row['user_pw'] == $_POST['user_pw'])) {
+
+        $sql01 = "
+        INSERT INTO log1
+        (
+            date,
+            time,
+            mc_code,
+            mc_num,
+            contents
+        )
+        VALUES
+        (
+            '" . date('Y-m-d') . "',
+            '" . date('H:i:s') . "',
+            '" . $row['card_id'] . "',
+            '" . $row['user_name'] . "',
+            '로그인'
+        )
+        ";
+        $res01 = mysqli_query($conn, $sql01);
+
+        $_SESSION['user_name'] = $row['user_name'];
+
+        echo "
+        <script>
+        document.location.href = '/main.html';
+        </script>
+        ";
+    } else if (($row['user_id'] == $_POST['user_id']) && ($row['user_pw'] != $_POST['user_pw'])) {
+        echo "
+        <script>
+        alert('로그인 정보가 올바르지 않습니다.');
+        document.location.href = '/index.html';
+        </script>
+        ";
+    } else if (($row['user_id'] != $_POST['user_id']) && ($row['user_pw'] == $_POST['user_pw'])) {
+        echo "
+        <script>
+        alert('로그인 정보가 올바르지 않습니다.');
+        document.location.href = '/index.html';
+        </script>
+        ";
+    } else {
+        echo "
+        <script>
+        alert('로그인 정보가 올바르지 않습니다.');
+        document.location.href = '/index.html';
+        </script>
+        ";
+    }
+}
+//패스워드가 비었을 경우
+else if (($_POST['user_id'] != null) && ($_POST['user_pw'] == null)) {
+    echo "
+        <script>
+        alert('비밀번호를 입력해주세요.');
+        document.location.href = '/index.html';
+        </script>
+        ";
+}
+//아이디가 비었을 경우
+else if (($_POST['user_id'] == null) && ($_POST['user_pw'] != null)) {
+    echo "
+    <script>
+    alert('아이디를 입력해주세요.');
+    document.location.href = '/index.html';
+    </script>
+    ";
+}
+//둘다 비었을 경우
+else {
+    echo "
+    <script>
+    alert('아이디와 비밀번호를 입력해주세요.');
+    document.location.href = '/index.html';
+    </script>
+    ";
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAST MES</title>
+</head>
+
+<body>
+
+</body>
+
+</html>

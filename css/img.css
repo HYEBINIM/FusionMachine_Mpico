@@ -1,0 +1,563 @@
+:root {
+    --color-00: #040404;
+    --color-09: #090909;
+    --color-0c: #0c0c0c;
+    --color-19: #191919;
+    --color-29: #292929;
+    --color-44: #444;
+    --color-99: #979797;
+    --color-cc: #c1c1c1;
+    --color-ff: #f7f7f7;
+    --brand-color: #2929cc;
+    --brand-color-ex: #d6d633;
+    --padding-48: 3rem;
+    --padding-44: 2.75rem;
+    --padding-40: 2.5rem;
+    --padding-36: 2.25rem;
+    --padding-32: 2rem;
+    --padding-30: 1.875rem;
+    --padding-28: 1.75rem;
+    --standard-padding: 4rem;
+    --padding-24: 1.5rem;
+    --padding-20: 1.25rem;
+    --padding-18: 1.125rem;
+    --normal-padding: 1rem;
+    --padding-15: 0.9375rem;
+    --padding-14: 0.875rem;
+    --padding-12: 0.75rem;
+    --padding-10: 0.625rem;
+    --padding-9: 0.5625rem;
+    --padding-5: 0.3125rem;
+    --padding-48-not: -3rem;
+    --padding-44-not: -2.75rem;
+    --padding-40-not: -2.5rem;
+    --padding-36-not: -2.25rem;
+    --padding-32-not: -2rem;
+    --padding-24-not: -1.5rem;
+    --padding-20-not: -1.25rem;
+    --padding-18-not: -1.125rem;
+    --normal-padding-not: -1rem;
+    --padding-15-not: -0.9375rem;
+    --padding-14-not: -0.875rem;
+    --padding-12-not: -0.75rem;
+    --padding-10-not: -0.625rem;
+    --padding-9-not: -0.5625rem;
+    --padding-5-not: -0.3125rem;
+    --visual-font: 6vmax;
+    --title-font: 5vmax;
+    --small-title-font: 4vmax;
+    --font-72: 4.5em;
+    --font-60: 3.75em;
+    --font-48: 3em;
+    --font-40: 2.5em;
+    --font-36: 2.25em;
+    --font-32: 2em;
+    --font-30: 1.875em;
+    --font-28: 1.75em;
+    --font-24: 1.5em;
+    --font-22: 1.375em;
+    --font-20: 1.25em;
+    --font-18: 1.125em;
+    --normal-font: 1em;
+    --font-15: 0.9375em;
+    --font-14: 0.875em;
+    --font-12: 0.75em;
+    --font-10: 0.625em;
+    --font-8: 0.5em;
+}
+
+@font-face {
+    font-family: SCDream1;
+    src: url(/font/SCDream1.otf);
+}
+
+@font-face {
+    font-family: SCDream2;
+    src: url(/font/SCDream2.otf);
+}
+
+@font-face {
+    font-family: SCDream3;
+    src: url(/font/SCDream3.otf);
+}
+
+@font-face {
+    font-family: SCDream4;
+    src: url(/font/SCDream4.otf);
+}
+
+@font-face {
+    font-family: SCDream5;
+    src: url(/font/SCDream5.otf);
+}
+
+@font-face {
+    font-family: SCDream6;
+    src: url(/font/SCDream6.otf);
+}
+
+@font-face {
+    font-family: SCDream7;
+    src: url(/font/SCDream7.otf);
+}
+
+@font-face {
+    font-family: SCDream8;
+    src: url(/font/SCDream8.otf);
+}
+
+@font-face {
+    font-family: SCDream9;
+    src: url(/font/SCDream9.otf);
+}
+
+
+/* 공용 CSS */
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'SCDream4';
+}
+
+a{
+    text-decoration: none;
+}
+
+li{
+    list-style: none;
+}
+
+table{
+    border-collapse: collapse;
+}
+/* /공용 CSS */
+
+/* 커스텀 CSS */
+body{
+    position: relative;
+    background: #000;
+}
+
+a{
+    color: var(--color-ff);
+}
+
+tr, th, td{
+    border: 1px solid var(--color-ff);
+}
+/* /커스텀 CSS */
+
+/* /메뉴 */
+
+header{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 74px;
+    display: flex;
+    align-items: center;
+    padding: 0 0.5vw;
+    z-index: 2;
+}
+
+header a{
+    width: 30px;
+    height: 44px;
+}
+
+.img_logo{
+    width: 30px;
+    height: 44px;
+}
+
+nav{
+    width: 100%;
+    height: 54px;
+}
+
+.menu{
+    width: 100%;
+    height: 54px;
+    color: var(--color-ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--padding-30);
+}
+
+.menu li{
+    height: 100%;
+    display: flex;
+    align-items: center;
+    z-index: 3;
+}
+
+.menu li a{
+    position: relative;
+    width: 100%;
+    height: auto;
+}
+
+.menu1::after {
+position: absolute; content:""; display: block; border-bottom: 3px solid var(--brand-color-ex); transition: width 250ms ease-in-out; left: auto; width: 0;
+}
+
+.menu1:hover::after {
+width: 100%;
+}
+
+.menu2::after {
+position: absolute; content:""; display: block; border-bottom: 3px solid var(--brand-color-ex); transition: width 250ms ease-in-out; left: auto; width: 0;
+}
+
+.menu2:hover::after {
+width: 100%;
+}
+
+.menu3::after {
+position: absolute; content:""; display: block; border-bottom: 3px solid var(--brand-color-ex); transition: width 250ms ease-in-out; left: auto; width: 0;
+}
+
+.menu3:hover::after {
+width: 100%;
+}
+
+.menu4::after {
+position: absolute; content:""; display: block; border-bottom: 3px solid var(--brand-color-ex); transition: width 250ms ease-in-out; left: auto; width: 0;
+}
+
+.menu4:hover::after {
+width: 100%;
+}
+
+.active{
+    position: absolute; content:""; display: block; border-bottom: 3px solid var(--brand-color-ex); transition:0; top:1.5px; left: auto; width: 0;
+}
+
+
+.cursor { position: fixed; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform 0.2s; mix-blend-mode: difference; transform: translate(-50%, -50%); pointer-events: none; z-index: 3; }
+
+ul li:hover ~ .cursor { transform: scale(5); }
+
+/* /메뉴 */
+
+/* img 메뉴 CSS */
+
+.overlay{
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: #131313c7;
+    z-index: 998;
+    display: none;
+}
+
+.clone-img{
+    width: 800px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    z-index: 999;
+}
+
+section{
+    position: fixed;
+    top: 74px;
+    left: 0;
+    width: calc(100% - 2vw);
+    height: calc(100% - 60px);
+    margin-left: 1vw;
+    margin-right: 1vw;
+    padding-top: 10px;
+}
+
+form{
+    width: 100%;
+    height: 100%;
+}
+
+.set{
+    width: 100%;
+    height: 60px;
+    display: flex;
+    align-items:end;
+    background: var(--header-color);
+    border: 1px solid var(--part-color);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px
+}
+
+.sorting{
+    width:80px;
+    height:50px;
+    background: var(--color-19);
+    color: var(--color-cc);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 6px;
+    margin-left:0.5vw;
+    border: 1px solid var(--color-cc);
+}
+
+.menu_select{
+    background: var(--brand-color-ex);
+    color: var(--text-color-white);
+    border: 1px solid var(--brand-color-ex);
+}
+
+.search{
+    position:relative;
+width: calc(100% - 160px - 2.5vw);
+height:58px;
+margin-left: 1vw;
+display: flex;
+align-items: center;
+justify-content: end;
+}
+
+.search .date{
+    width: 150px;
+    height: 40px;
+    border: 1px solid var(--color-cc);
+    border-radius: 6px;
+    text-align: center;
+    background: var(--color-19);
+    color: var(--color-cc);
+}
+.search .date_between{
+    color: var(--color-cc);
+}
+
+.search .btn_search{
+    width: 80px;
+    height:40px;
+    background: var(--brand-color-ex);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-00);
+    border: 1px solid var(--brand-color-ex);
+    border-radius: 6px;
+    margin-left: 1vw;
+  }
+
+  .search .btn_today{
+    width: 80px;
+    height:40px;
+    background: var(--color-19);
+    margin-right: 0.5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-cc);
+    border: 1px solid var(--color-cc);
+    border-radius: 6px;
+    margin-left: 1vw;
+  }
+
+.container{
+    position: relative;
+    width: 100%;
+    height: calc(100% - 70px); /* .set높이 뺌 */
+    background: var(--header-color);
+    border-left: 1px solid var(--part-color);
+    border-right: 1px solid var(--part-color);
+    border-bottom: 1px solid var(--part-color);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding: 0.5vw;
+    /* margin-left: 1vw;
+    margin-right: 1vw; */
+}
+
+.img_list::-webkit-scrollbar {
+    width: 10px;
+  }
+  .img_list::-webkit-scrollbar-thumb {
+    background-color: #ffffff;
+    border-radius: 10px;
+  }
+  .img_list::-webkit-scrollbar-track {
+    background-color: rgb(255, 150, 150);
+    border-radius: 10px;
+    box-shadow: inset 0px 0px 5px white;
+  }
+
+
+iframe{
+    width: 100%;
+    height: 100%;
+}
+
+.img_list{
+    width: 100%;
+    height:100%;
+    overflow-y: scroll;
+    list-style: none;
+}
+
+/* .img_list::-webkit-scrollbar{
+    display:none;
+} */
+
+.img_list::-webkit-scrollbar {
+    width: 10px;
+  }
+  .img_list::-webkit-scrollbar-thumb {
+    background-color: #ffffff;
+    border-radius: 10px;
+  }
+  .img_list::-webkit-scrollbar-track {
+    background-color: var(--color-19);
+    border-radius: 10px;
+    box-shadow: inset 0px 0px 5px white;
+  }
+
+.img_list .date_box{
+    width: 100%;
+    height: 50px;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding-left: 1vw;
+    border-top : 1px solid var(--color-cc);
+    border-bottom : 1px solid var(--color-cc);
+    background: var(--color-00);
+}
+
+.img_list .img_container{
+    width: 100% !important;
+    height: auto;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.img_list .img_container .img_box{
+    width: 8%;
+    border: 1px solid var(--part-color);
+    border-radius: 6px;
+    margin: 1%;
+    }
+
+.img_list .img_container .img_box img{
+    width: 100%;
+    }
+
+.img_box {
+    position: relative;
+    width: 50%;
+}
+
+
+.img {
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: .5s ease;
+    backface-visibility: hidden;
+    border: 1px solid var(--color-cc);
+}
+
+.middle {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.img_box:hover .img {
+    opacity: 0.3;
+}
+
+.img_box:hover .middle {
+    opacity: 1;
+}
+
+.text_result{
+    opacity: 1;
+    position:absolute;
+    top: 10px;
+    right: 10px;
+}
+
+.text_time {
+    width: 50%;
+    height: 35%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.text {
+    width: 50%;
+    height: 35%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--brand-color);
+    color: white;
+    border-radius: 6px;
+}
+
+.data_list{
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.data_list::-webkit-scrollbar{
+    display:none;
+}
+
+.chart_list{
+    width: 100%;
+    height: 100%;
+    overflow-y: scroll;
+}
+
+.chart_list::-webkit-scrollbar{
+    display:none;
+}
+
+#chart{
+    width: 100%;
+    height: 100%;
+}
+
+.no_result{
+    width: 100%;
+    color: var(--color-cc);
+    text-align: center;
+}
+
+.btn_gotop {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    right: 2.5vw;
+    bottom: 1vw;
+    border-radius: 50%;
+    z-index: 3;
+    background: var(--brand-color);
+}
+/* /img 메뉴 CSS */

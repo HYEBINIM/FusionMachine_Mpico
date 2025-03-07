@@ -1,0 +1,268 @@
+<?php
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/graph.css">
+    <!-- 아이콘 -->
+    <!-- link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" / -->
+    <!-- 차트 -->
+    <!-- script src="https://cdn.jsdelivr.net/npm/chart.js"></script -->
+    <title>명신 | 제품 검사 시스템</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="content">
+            <header>
+                <div class="logo_name">㈜ 명신</div>
+                <nav>
+                    <ul class="menu">
+                        <li><a class="menu1" href="/index.html">홈</a></li>
+                        <li><a class="menu2 active" href="/data.html">데이터</a></li>
+                        <li><a class="menu3" href="/graph.html">그래프</a></li>
+                        <li><a class="menu4" href="/user.html">사용자 관리</a></li>
+                    </ul>
+                </nav>
+
+            </header>
+            <section>
+                <form class="form" method='POST' action="/graph.html" target="_self">
+                    <div class="top">
+                        <?php
+                            if ($_SESSION['date1'] == null) {
+                                $_SESSION['date1'] = date('Y-m-d');
+                            }
+
+                            if ($_SESSION['date2'] == null) {
+                                $_SESSION['date2'] = date('Y-m-d');
+                            }
+
+                            if ($_POST['sorting_date'] == '검색') {
+                                $_SESSION['date1'] = $_POST['date1'];
+                                $_SESSION['date2'] = $_POST['date2'];
+                            } else if ($_POST['sorting_date'] == '오늘') {
+                                $_SESSION['date1'] = date('Y-m-d');
+                                $_SESSION['date2'] = date('Y-m-d');
+                            }
+                            ?>
+                        <div class='section2'>
+                            <input type="date" name="date1" class="input_date date1" value="<?php
+                                                                                            if ($_SESSION['date1'] != null) {
+                                                                                                $date1 = $_SESSION['date1'];
+                                                                                                echo $date1;
+                                                                                            } else {
+                                                                                                echo date('Y-m-d');
+                                                                                            }
+                                                                                            ?>">
+                            <span class="date_between">&nbsp;~&nbsp;</span>
+                            <input type="date" name="date2" class="input_date date2" value="<?php
+                                                                                            if ($_SESSION['date2'] != null) {
+                                                                                                $date2 = $_SESSION['date2'];
+                                                                                                echo $date2;
+                                                                                            } else {
+                                                                                                echo date('Y-m-d');
+                                                                                            }
+                                                                                            ?>">
+                            <input type='submit' name='sorting_date' class="btn_search" value="검색">
+                            <input type='submit' name='sorting_date' class="btn_today" value="오늘">
+                        </div>
+                    </div>
+                    <div class="contents">
+                        <canvas id="chart"></canvas>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <!-- Load d3.js and c3.js -->
+    <script src="/plugins/d3/d3.min.js" charset="utf-8"></script>
+    <script src="/plugins/c3/js/c3.min.js"></script>
+    <!-- JQuery -->
+    <!-- script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+    <script type="text/javascript">
+    //마우스커서
+    // const $cursor = document.querySelector('.cursor');
+    // document.addEventListener('mousemove', function(e) {
+    //     $cursor.style.left = e.clientX + 'px';
+    //     $cursor.style.top = e.clientY + 'px';
+    // });
+    //마우스커서 끝
+
+
+    const ctx = document.getElementById('chart');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [<?php
+                            $sql01 = "select * from result1 where date >='" . $date1 . "' and date <='" . $date2 . "'";
+                            $res01 = mysqli_query($conn, $sql01);
+                            for (; $row01 = mysqli_fetch_array($res01);) {
+                                echo "
+                                    '" . $row01['date'] . " " . $row01['time'] . "',
+                                    ";
+                            }
+                            ?>],
+            datasets: [{
+                    label: ['data1'],
+                    data: [
+                        <?php
+                            $sql = "select * from result1 where date >='" . $date1 . "' and date <='" . $date2 . "'";
+                            $res = mysqli_query($conn, $sql);
+                            for ($count = 1; $row = mysqli_fetch_array($res); $count++) {
+                                echo "
+                                    " . $row['data1'] . ",
+                                    ";
+                            }
+                            ?>
+                    ],
+                    borderWidth: 1
+                },
+                {
+                    label: ['data2'],
+                    data: [
+                        <?php
+                            $sql = "select * from result1 where date >='" . $date1 . "' and date <='" . $date2 . "'";
+                            $res = mysqli_query($conn, $sql);
+                            for ($count = 1; $row = mysqli_fetch_array($res); $count++) {
+                                echo "
+                                    " . $row['data2'] . ",
+                                    ";
+                            }
+                            ?>
+                    ],
+                    borderWidth: 1
+                },
+                {
+                    label: ['data3'],
+                    data: [
+                        <?php
+                            $sql = "select * from result1 where date >='" . $date1 . "' and date <='" . $date2 . "'";
+                            $res = mysqli_query($conn, $sql);
+                            for ($count = 1; $row = mysqli_fetch_array($res); $count++) {
+                                echo "
+                                    " . $row['data3'] . ",
+                                    ";
+                            }
+                            ?>
+                    ],
+                    borderWidth: 1
+                },
+                {
+                    label: ['data4'],
+                    data: [
+                        <?php
+                            $sql = "select * from result1 where date >='" . $date1 . "' and date <='" . $date2 . "'";
+                            $res = mysqli_query($conn, $sql);
+                            for ($count = 1; $row = mysqli_fetch_array($res); $count++) {
+                                echo "
+                                    " . $row['data4'] . ",
+                                    ";
+                            }
+                            ?>
+                    ],
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false
+                }
+            }
+        }
+    });
+
+    window.addEventListener('beforeprint', () => {
+        myChart.resize(600, 600);
+    });
+    window.addEventListener('afterprint', () => {
+        myChart.resize();
+    });
+
+    var element = document.getElementsByClassName("btn_img");
+    element.style.backgroundColor = '#900';
+
+    document.getElementsByClassName('btn_img').style.backgroundColor = 'green'
+    $(document).ready(function() {
+
+        //클릭 이벤트
+        // $(".btn_img").click(function() {
+        //     $('.btn_img').css('background', '#0078FF');
+        //     $('.btn_img').css('color', '#F4F4F4');
+        //     $('.btn_data').css('background', '#25252533');
+        //     $('.btn_data').css('color', '#252525');
+        //     $('.container__img').css('display', 'block');
+        //     $('.container__data').css('display', 'none');
+        // });
+
+        // $(".btn_data").click(function() {
+        //     $('.btn_data').css('background', '#0078FF');
+        //     $('.btn_data').css('color', '#F4F4F4');
+        //     $('.btn_img').css('background', '#25252533');
+        //     $('.btn_img').css('color', '#252525');
+        //     $('.container__data').css('display', 'block');
+        //     $('.container__img').css('display', 'none');
+        // });
+
+        // $(".btn_search").click(function() {
+        //     $('.search__date').css('display', 'block');
+        // });
+
+        // $(".btn_search").click(function() {
+        //     $(".search__date").toggle(300);
+        // });
+
+    });
+
+    // 커스텀 슬라이더
+    const inputLeft = document.getElementById("input-left");
+    const inputRight = document.getElementById("input-right");
+
+    const thumbLeft = document.querySelector(".slider > .thumb.left");
+    const thumbRight = document.querySelector(".slider > .thumb.right");
+    const range = document.querySelector(".slider > .range");
+
+    const setLeftValue = () => {
+        const _this = inputLeft;
+        const [min, max] = [parseInt(_this.min), parseInt(_this.max)];
+        // 교차되지 않게, 1을 빼준 건 완전히 겹치기보다는 어느 정도 간격을 남겨두기 위해.
+        _this.value = Math.min(parseInt(_this.value), parseInt(inputRight.value) - 1);
+        // input, thumb 같이 움직이도록
+        const percent = ((_this.value - min) / (max - min)) * 100;
+        thumbLeft.style.left = percent + "%";
+        range.style.left = percent + "%";
+    };
+
+    const setRightValue = () => {
+        const _this = inputRight;
+        const [min, max] = [parseInt(_this.min), parseInt(_this.max)];
+        // 교차되지 않게, 1을 더해준 건 완전히 겹치기보다는 어느 정도 간격을 남겨두기 위해.
+        _this.value = Math.max(parseInt(_this.value), parseInt(inputLeft.value) + 1);
+        // input, thumb 같이 움직이도록
+        const percent = ((_this.value - min) / (max - min)) * 100;
+        thumbRight.style.right = 100 - percent + "%";
+        range.style.right = 100 - percent + "%";
+    };
+
+    inputLeft.addEventListener("input", setLeftValue);
+    inputRight.addEventListener("input", setRightValue);
+    // /커스텀 슬라이더
+    </script>
+</body>
+
+</html>

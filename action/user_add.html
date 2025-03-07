@@ -1,0 +1,39 @@
+<meta charset="UTF-8">
+
+<?php
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+
+$sql = "select * from user where user_name = '" . $_POST['user_name'] . "' || card_id = '" . $_POST['card_id'] . "' || phone = '" . $_POST['phone'] . "'";
+$res = mysqli_query($conn, $sql);
+if ($res->num_rows > 0) {
+    echo "
+<script>
+alert('중복된 정보가 존재합니다.')
+location.href= '/user.html'
+</script>
+";
+} else {
+    $sql01 = "
+    INSERT INTO user
+    (
+        user_name,
+        card_id,
+        phone,
+        img
+    )
+    VALUES
+    (
+        '" . $_POST['user_name'] . "',
+        '" . $_POST['card_id'] . "',
+        '" . $_POST['phone'] . "',
+        ''
+    )
+    ";
+    $res01 = mysqli_query($conn, $sql01);
+    echo "<script>
+    alert('등록완료')
+    document.location.href = '/user.html';
+    </script>";
+}
+?>

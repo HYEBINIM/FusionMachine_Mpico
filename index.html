@@ -1,0 +1,638 @@
+<?php
+date_default_timezone_set('Asia/Seoul');
+session_start();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+    <!-- 새로고침 -->
+    <meta http-equiv="refresh" content="5; url=index.html" />
+    <!-- 아이콘 -->
+    <!-- link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /-->
+    <title>명신 | 제품 검사 시스템</title>
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="content">
+            <header>
+                <div class="logo_name">㈜ 명신</div>
+                <nav>
+                    <ul class="menu">
+                        <li><a class="menu1 active" href="/index.html">홈</a></li>
+                        <li><a class="menu2" href="/data.html">데이터</a></li>
+                        <li><a class="menu3" href="/graph.html">그래프</a></li>
+                        <li><a class="menu4" href="/user.html">사용자 관리</a></li>
+                    </ul>
+                    <?php
+                    $conn = new mysqli("localhost", "server", "00000000", "dataset");
+                    //현재 작업자 불러오기
+                    $sql = "select * from log1 order by id desc limit 1";
+                    $res = mysqli_query($conn, $sql);
+                    $row = mysqli_fetch_array($res);
+
+                    //result
+                    $sql01 = "select * from result1 order by id desc limit 1";
+                    $res01 = mysqli_query($conn, $sql01);
+                    $row01 = mysqli_fetch_array($res01);
+
+                    //유저이름 가져오기
+                    $sql04 = "select * from user where card_id='" . $row['mc_code'] . "'";
+                    $res04 = mysqli_query($conn, $sql04);
+                    $row04 = mysqli_fetch_array($res04);
+
+                    //상단 표시정보
+                    //검사날짜
+                    if ($row01['date'] == '') {
+                        $date = "ㅡ";
+                    } else {
+                        $date = $row01['date'];
+                    }
+                    //검사시간
+                    if ($row01['time'] == '') {
+                        $time = "ㅡ";
+                    } else {
+                        $time = $row01['time'];
+                    }
+                    //검사호기
+                    if ($row01['mc_num'] == '') {
+                        $mc_num = "ㅡ";
+                    } else {
+                        $mc_num = $row01['mc_num'];
+                    }
+
+                    //마스터 주기
+                    if ($row01['data8'] == '') {
+                        $mcount = "0";
+                    } else {
+                        $mcount = $row01['data8'];
+                    }
+
+                    //양품수량
+                    if ($row01['data9'] == '') {
+                        $data9 = 0;
+                        $ok = "ㅡ";
+                    } else {
+                        $data9 = $row01['data9'];
+                        $ok = $row01['data9'];
+                    }
+                    //불량수량
+                    if ($row01['data10'] == '') {
+                        $data10 = 0;
+                        $ng = "ㅡ";
+                    } else {
+                        $data10 = $row01['data10'];
+                        $ng = $row01['data10'];
+                    }
+                    //전체수량
+                    $all = $data9 + $data10;
+                    //CT
+                    if ($row01['ct1'] == '') {
+                        $ct = "ㅡ";
+                    } else {
+                        $ct = $row01['ct1'];
+                    }
+                    ?>
+                </nav>
+                <!-- <div class="user_section">
+                    <span class="material-symbols-outlined">account_circle</span>
+                    <div class='user_name'>
+                        <?php echo $row04['user_name']; ?>
+                    </div>
+                </div> -->
+            </header>
+            <section>
+                <div class="top">
+                    <div class="section1">
+                        <div class="info1">
+                            <div class='info_item info_item_left'>
+                                <div class='item_title'>검사날짜</div>
+                                <div class='item_text'>
+                                    <?php echo $date; ?>
+                                </div>
+                            </div>
+                            <div class='info_item info_item_mid info_item_notop'>
+                                <div class='item_title'>검사시간</div>
+                                <div class='item_text'>
+                                    <?php echo $time; ?>
+                                </div>
+                            </div>
+                            <div class='info_item info_item_mid info_item_notop'>
+                                <div class='item_title'>마스터 측정 주기</div>
+                                <div class='item_text'>
+                                    <?php echo $mcount; ?>
+                                </div>
+                            </div>
+                            <div class='info_item info_item_right info_item_notop'>
+                                <div class='item_title'>작업자</div>
+                                <div class='item_text'>
+                                    <?php
+                                    if ($row04['user_name'] == 'admin') {
+                                        $user_name = '관리자';
+                                    } else if ($row04['user_name'] != '') {
+                                        $user_name = $row04['user_name'];
+                                    } else {
+                                        $user_name = 'ㅡ';
+                                    }
+                                    echo $user_name; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info2">
+                            <div class='info_item info_item_left'>
+                                <div class='item_title'>전체수량</div>
+                                <div class='item_text'>
+                                    <?php echo $all; ?>
+                                </div>
+                            </div>
+                            <div class='info_item info_item_mid info_item_notop'>
+                                <div class='item_title'>양품수량</div>
+                                <div class='item_text'>
+                                    <?php echo $ok; ?>
+                                </div>
+                            </div>
+                            <div class='info_item info_item_mid info_item_notop'>
+                                <div class='item_title'>불량수량</div>
+                                <div class='item_text'>
+                                    <?php echo $ng; ?>
+                                </div>
+                            </div>
+                            <div class='info_item info_item_right info_item_notop'>
+                                <div class='item_title'>CT</div>
+                                <div class='item_text'>
+                                    <?php echo $ct ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="table_box">
+                    <div class="pc_table">
+                        <div class="thead">
+                            <div class="thead_item">번호</div>
+                            <div class="thead_item">날짜</div>
+                            <div class="thead_item">시간</div>
+                            <div class="thead_item">작업자</div>
+                            <div class="thead_item">상태</div>
+                            <div class="thead_item">IOD1</div>
+                            <div class="thead_item">IOD2</div>
+                            <div class="thead_item">IOD3</div>
+                            <div class="thead_item">IOD4</div>
+                            <div class="thead_item">sccm</div>
+                            <div class="thead_item">IOD판정</div>
+                            <div class="thead_item">홀판정</div>
+                            <div class="thead_item">리크판정</div>
+                            <div class="thead_item">합격여부</div>
+                            <div class="thead_item">마스터측정주기</div>
+                            <div class="thead_item">CT</div>
+                        </div>
+                        <div class='row_box'>
+                            <?php
+                            //마지막 행 구하기
+                            $sql06 = "select max(id) as max_id from result1 where date = ". date('Y-m-d') ."";
+                            $res06 = mysqli_query($conn, $sql06);
+                            $row06 = mysqli_fetch_array($res06);
+                            $max_id = $row06['max_id'];
+
+                            //테이블 데이터
+                            $sql03 = "select * from result1 order by id desc limit 1000";
+                            $res03 = mysqli_query($conn, $sql03);
+
+                            //2. 값이 있는지 없는지 확인한다
+                            if ($res03->num_rows > 0) {
+                                // 값이 있을 때 실행할 내용
+                                for ($count = 1; $row03 = mysqli_fetch_array($res03); $count++) {
+
+                                    //유저이름 가져오기
+                                    $sql05 = "select * from user where card_id='" . $row03['mc_code'] . "'";
+                                    $res05 = mysqli_query($conn, $sql05);
+                                    $row05 = mysqli_fetch_array($res05);
+
+                                    $id = $row03['id'];
+
+                                    if ($row05['user_name'] == 'admin') {
+                                        $res_user_name = '관리자';
+                                    } else if ($row05['user_name'] != '') {
+                                        $res_user_name = $row05['user_name'];
+                                    } else {
+                                        $res_user_name = 'ㅡ';
+                                    }
+
+                                    if ($row03['date'] == '') {
+                                        $res_date = '';
+                                    } else {
+                                        $res_date = $row03['date'];
+                                    }
+
+                                    if ($row03['time'] == '') {
+                                        $res_time = '';
+                                    } else {
+                                        $res_time = $row03['time'];
+                                    }
+
+                                    if ($row03['contents'] == '') {
+                                        $res_contents = 'ㅡ';
+                                    } else if ($row03['contents'] == 'MASTER SET') {
+                                        $res_contents = "<div class='contents_master'>마스터 등록 완료</div>";
+                                    } else if ($row03['contents'] == 'USER CHANGE' && $row03['mc_num'] == '9249') {
+                                        $res_contents = "<div class='contents_normal'>시스템 ON</div>";
+                                    } else if ($row03['contents'] == 'USER CHANGE') {
+                                        $res_contents = "<div class='contents_normal'>※ 작업자 변경</div>";
+                                    } else if ($row03['contents'] == 'ERR_100') {
+                                        $res_contents = "<div class='contents_error'>[경고] 에어리어 손동작 감지 </div>";
+                                    } else if ($row03['contents'] == 'ERR_101') {
+                                        $res_contents = "<div class='contents_error'>[경고] 제품 안착 불량</div>";
+                                    } else if ($row03['contents'] == 'ERR_102') {
+                                        $res_contents = "<div class='contents_error'>[경고] 초기 위치 불량</div>";
+                                    } else if ($row03['contents'] == 'ERR_103') {
+                                        $res_contents = "<div class='contents_error'>[경고] 마스터 재등록 필요</div>";
+                                    } else if ($row03['contents'] == 'ERR_104') {
+                                        $res_contents = "<div class='contents_error'>[경고] IOD 치수 확인</div>";
+                                    } else if ($row03['contents'] == 'ERR_105') {
+                                        $res_contents = "<div class='contents_error'>[경고] 비상정지 락 확인</div>";
+                                    } else if ($row03['contents'] == 'ERR_106') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_107') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_108') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_109') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_110') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'DATA') {
+                                        $res_contents = "<div class='contents_data'>검사</div>";
+                                    } else {
+                                        $res_contents = $row01['contents'];
+                                    }
+
+                                    if ($row03['data1'] == '') {
+                                        $res_data1 = '';
+                                    } else {
+                                        $res_data1 = $row03['data1'];
+                                    }
+
+                                    if ($row03['data2'] == '') {
+                                        $res_data2 = '';
+                                    } else {
+                                        $res_data2 = $row03['data2'];
+                                    }
+
+                                    if ($row03['data3'] == '') {
+                                        $res_data3 = '';
+                                    } else {
+                                        $res_data3 = $row03['data3'];
+                                    }
+
+                                    if ($row03['data4'] == '') {
+                                        $res_data4 = '';
+                                    } else {
+                                        $res_data4 = $row03['data4'];
+                                    }
+
+                                    if ($row03['index1'] == '') {
+                                        $res_data11 = '';
+                                    } else {
+                                        $res_data11 = $row03['index1'];
+                                    }
+
+                                    //LVDT검사
+                                    if ($row03['data5'] == '1') {
+                                        $res_data5 = "<div class='badge_ok'>합격</div>";
+                                    } else if ($row03['data5'] == '') {
+                                        $res_data5 = "<div class='badge_no'>검사X</div>";
+                                    } else {
+                                        $res_data5 = "<div class='badge_ng'>불합격</div>";
+                                    }
+                                    //홀검사
+                                    if ($row03['data6'] == '1') {
+                                        $res_data6 = "<div class='badge_ok'>합격</div>";
+                                    } else if ($row03['data6'] == '') {
+                                        $res_data6 = "<div class='badge_no'>검사X</div>";
+                                    } else {
+                                        $res_data6 = "<div class='badge_ng'>불합격</div>";
+                                    }
+                                    //리크검사
+                                    if ($row03['data7'] == '1') {
+                                        $res_data7 = "<div class='badge_ok'>합격</div>";
+                                    } else if ($row03['data7'] == '') {
+                                        $res_data7 = "<div class='badge_no'>검사X</div>";
+                                    } else {
+                                        $res_data7 = "<div class='badge_ng'>불합격</div>";
+                                    }
+                                    //합격검사
+                                    if ($row03['conclusion1'] == '1') {
+                                        $res_conclusion1 = "<div class='badge_ok'>합격</div>";
+                                    } else if ($row03['conclusion1'] == '') {
+                                        $res_conclusion1 = "<div class='badge_no'>검사X</div>";
+                                    } else {
+                                        $res_conclusion1 = "<div class='badge_ng'>불합격</div>";
+                                    }
+                                    if ($row03['ct1'] == '') {
+                                        $res_ct1 = '없음';
+                                    } else {
+                                        $res_ct1 = $row03['ct1'];
+                                    }
+
+
+                                    //마스터 주기
+                                    if ($row03['data8'] == '') {
+                                        $mcount = "0";
+                                    } else {
+                                        $mcount = $row03['data8'];
+                                    }
+
+                                    if ($row03['data1'] == NULL && $row03['data2'] == NULL && $row03['data3'] == NULL && $row03['data4'] == NULL) {
+                                        echo "
+                                        <div class='row'>
+                                            <div class='row_item thin'>" . $id . "</div>
+                                            <div class='row_item thin'>" . $res_date . "</div>
+                                            <div class='row_item thin'>" . $res_time . "</div>
+                                            <div class='row_item thin'>" . $res_user_name . "</div>
+			      <div class='row_item thin'></div>
+			      <div class='row_item thin'></div>
+                                            <div class='row_item thin' style='width:75%;'>" . $res_contents . "</div>
+                                        </div>
+                                        ";
+                                    } else {
+                                        echo "
+                                        <div class='row'>
+                                            <div class='row_item thin'>" . $id . "</div>
+                                            <div class='row_item thin'>" . $res_date . "</div>
+                                            <div class='row_item thin'>" . $res_time . "</div>
+                                            <div class='row_item thin'>" . $res_user_name . "</div>
+                                            <div class='row_item thin'>" . $res_contents . "</div>
+                                            <div class='row_item bold'>" . $res_data1 . "</div>
+                                            <div class='row_item bold'>" . $res_data2 . "</div>
+                                            <div class='row_item bold'>" . $res_data3 . "</div>
+                                            <div class='row_item bold'>" . $res_data4 . "</div>
+                                            <div class='row_item bold'>" . $res_data11 . "</div>
+                                            <div class='row_item thin'>" . $res_data5 . "</div>
+                                            <div class='row_item thin'>" . $res_data6 . "</div>
+                                            <div class='row_item thin'>" . $res_data7 . "</div>
+                                            <div class='row_item thin'>" . $res_conclusion1 . "</div>
+                                            <div class='row_item thin'>" . $mcount . "</div>
+                                            <div class='row_item thin'>" . $res_ct1 . "</div>
+                                        </div>
+                                        ";
+                                    }
+                                }
+                            } else {
+                                // 값이 없을 때 실행할 내용
+                                echo "
+                                <div class='row_none'>
+                                결과값이 없습니다.
+                                </div>
+                            ";
+                            }
+
+                            ?>
+                        </div>
+                    </div>
+                    <div class="mobile_table">
+                        <div class="thead">
+                            <div class="thead_item">번호</div>
+                            <div class="row_box">
+                                <div class="row1">
+                                    <div class="thead_item">날짜</div>
+                                    <div class="thead_item">시간</div>
+                                    <div class="thead_item">1</div>
+                                    <div class="thead_item">2</div>
+                                    <div class="thead_item">IOD</div>
+                                    <div class="thead_item">홀</div>
+                                </div>
+                                <div class="row2">
+                                    <div class="thead_item">작업자</div>
+                                    <div class="thead_item">상태</div>
+                                    <div class="thead_item">3</div>
+                                    <div class="thead_item">4</div>
+                                    <div class="thead_item">리크</div>
+                                    <div class="thead_item">합격</div>
+                                </div>
+                            </div>
+                            <div class="thead_item">마스터</div>
+                            <div class="thead_item">CT</div>
+                        </div>
+                        <div class='row_box'>
+                            <?php
+                            //마지막 행 구하기
+                            $sql06 = "select max(id) as max_id from result1 order by id desc limit 1000";
+                            $res06 = mysqli_query($conn, $sql06);
+                            $row06 = mysqli_fetch_array($res06);
+                            $max_id = $row06['max_id'];
+
+                            //테이블 데이터
+                            $sql03 = "select * from result1 order by id desc limit 1000";
+                            $res03 = mysqli_query($conn, $sql03);
+
+
+                            //2. 값이 있는지 없는지 확인한다
+                            if ($res03->num_rows > 0) {
+                                // 값이 있을 때 실행할 내용
+                                for ($count = $max_id; $row03 = mysqli_fetch_array($res03); $count--) {
+
+                                    //유저이름 가져오기
+                                    $sql05 = "select * from user where card_id='" . $row03['mc_code'] . "'";
+                                    $res05 = mysqli_query($conn, $sql05);
+                                    $row05 = mysqli_fetch_array($res05);
+
+                                    if ($row05['user_name'] == 'admin') {
+                                        $res_user_name = '관리자';
+                                    } else if ($row05['user_name'] != '') {
+                                        $res_user_name = $row05['user_name'];
+                                    } else {
+                                        $res_user_name = 'ㅡ';
+                                    }
+
+                                    if ($row03['date'] == '') {
+                                        $res_date = '';
+                                    } else {
+                                        // $date = date("Y-m-d H:i:s", $row03['date']);
+                                        $now = time();
+                                        //$month = date('m', $now);
+                                        //$date = date('d', $now);
+                                        //$res_date = "" . $month . "/" . $date . "";
+                                    }
+
+                                    if ($row03['time'] == '') {
+                                        $res_time = '';
+                                    } else {
+                                        $res_time = $row03['time'];
+                                    }
+
+                                    if ($row03['contents'] == '') {
+                                        $res_contents = 'ㅡ';
+                                    } else if ($row03['contents'] == 'MASTER SET') {
+                                        $res_contents = "<div class='contents_master'>마스터 등록 완료</div>";
+                                    } else if ($row03['contents'] == 'USER CHANGE' && $row03['mc_num'] == '9249') {
+                                        $res_contents = "<div class='contents_normal'>시스템 ON</div>";
+                                    } else if ($row03['contents'] == 'USER CHANGE') {
+                                        $res_contents = "<div class='contents_normal'>※ 작업자 변경</div>";
+                                    } else if ($row03['contents'] == 'ERR_100') {
+                                        $res_contents = "<div class='contents_error'>[경고] 에어리어 손동작 감지 </div>";
+                                    } else if ($row03['contents'] == 'ERR_101') {
+                                        $res_contents = "<div class='contents_error'>[경고] 제품 안착 불량</div>";
+                                    } else if ($row03['contents'] == 'ERR_102') {
+                                        $res_contents = "<div class='contents_error'>[경고] 초기 위치 불량</div>";
+                                    } else if ($row03['contents'] == 'ERR_103') {
+                                        $res_contents = "<div class='contents_error'>[경고] 마스터 재등록 필요</div>";
+                                    } else if ($row03['contents'] == 'ERR_104') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_105') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_106') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_107') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_108') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_109') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'ERR_110') {
+                                        $res_contents = "<div class='contents_error'>미정</div>";
+                                    } else if ($row03['contents'] == 'DATA') {
+                                        $res_contents = "<div class='contents_data'>검사</div>";
+                                    } else {
+                                        $res_contents = $row01['contents'];
+                                    }
+
+                                    if ($row03['data1'] == '') {
+                                        $res_data1 = '';
+                                    } else {
+                                        $res_data1 = $row03['data1'];
+                                    }
+
+                                    if ($row03['data2'] == '') {
+                                        $res_data2 = '';
+                                    } else {
+                                        $res_data2 = $row03['data2'];
+                                    }
+
+                                    if ($row03['data3'] == '') {
+                                        $res_data3 = '';
+                                    } else {
+                                        $res_data3 = $row03['data3'];
+                                    }
+
+                                    if ($row03['data4'] == '') {
+                                        $res_data4 = '';
+                                    } else {
+                                        $res_data4 = $row03['data4'];
+                                    }
+                                    //LVDT검사
+                                    if ($row03['data5'] == '1') {
+                                        $res_data5 = "<div class='badge_ok_m'></div>";
+                                    } else if ($row03['data5'] == '') {
+                                        $res_data5 = "<div class='badge_no_m'></div>";
+                                    } else {
+                                        $res_data5 = "<div class='badge_ng_m'></div>";
+                                    }
+                                    //홀검사
+                                    if ($row03['data6'] == '1') {
+                                        $res_data6 = "<div class='badge_ok_m'></div>";
+                                    } else if ($row03['data6'] == '') {
+                                        $res_data6 = "<div class='badge_no_m'></div>";
+                                    } else {
+                                        $res_data6 = "<div class='badge_ng_m'></div>";
+                                    }
+                                    //리크검사
+                                    if ($row03['data7'] == '1') {
+                                        $res_data7 = "<div class='badge_ok_m'></div>";
+                                    } else if ($row03['data7'] == '') {
+                                        $res_data7 = "<div class='badge_no_m'></div>";
+                                    } else {
+                                        $res_data7 = "<div class='badge_ng_m'></div>";
+                                    }
+
+                                    //마스터 주기
+                                    if ($row03['data8'] == '') {
+                                        $mcount = "0";
+                                    } else {
+                                        $mcount = $row03['data8'];
+                                    }
+                                    //합격검사
+                                    if ($row03['conclusion1'] == '1') {
+                                        $res_conclusion1 = "<div class='badge_ok_m'></div>";
+                                    } else if ($row03['conclusion1'] == '') {
+                                        $res_conclusion1 = "<div class='badge_no_m'></div>";
+                                    } else {
+                                        $res_conclusion1 = "<div class='badge_ng_m'></div>";
+                                    }
+                                    if ($row03['ct1'] == '') {
+                                        $res_ct1 = '없음';
+                                    } else {
+                                        $res_ct1 = $row03['ct1'];
+                                    }
+
+
+                                    if ($row03['data1'] == NULL && $row03['data2'] == NULL && $row03['data3'] == NULL && $row03['data4'] == NULL) {
+                                        echo "
+                                        <div class='row'>
+                                            <div class='row_item thin' style='width: 65.22px !important;'>" . $count . "</div>
+                                            <div class='row_box' style='width: 100.54px !important;'>
+                                                <div class='row1'>
+                                                    <div class='row_item thin'>" . $res_date . "</div>
+                                                    <div class='row_item thin'>" . $res_time . "</div>
+                                                </div>
+                                                <div class='row2'>
+                                                    <div class='row_item thin'>" . $res_user_name . "</div>
+                                                </div>
+                                            </div> 
+                                            <div class='row_item thin merge'>" . $res_contents . "</div>
+                                            <div class='row_item thin'></div>
+                                        </div>
+                                        ";
+                                    } else {
+                                        echo "
+                                        <div class='row'>
+                                            <div class='row_item thin'>" . $count . "</div>
+                                            <div class='row_box'>
+                                                <div class='row1'>
+                                                    <div class='row_item thin'>" . $res_date . "</div>
+                                                    <div class='row_item thin'>" . $res_time . "</div>
+                                                    <div class='row_item bold'>" . $res_data1 . "</div>
+                                                    <div class='row_item bold'>" . $res_data2 . "</div>
+                                                    <div class='row_item thin'>" . $res_data5 . "</div>
+                                                    <div class='row_item thin'>" . $res_data6 . "</div>
+                                                </div>
+                                                <div class='row2'>
+                                                    <div class='row_item thin'>" . $res_user_name . "</div>
+                                                    <div class='row_item thin'>" . $res_contents . "</div>
+                                                    <div class='row_item bold'>" . $res_data3 . "</div>
+                                                    <div class='row_item bold'>" . $res_data4 . "</div>
+                                                    <div class='row_item thin'>" . $res_data7 . "</div>
+                                                    <div class='row_item thin'>" . $res_conclusion1 . "</div>
+                                                </div>
+                                            </div>
+                                            <div class='row_item thin'>" . $mcount . "</div>
+                                            <div class='row_item thin'>" . $res_ct1 . "</div>
+                                        </div>
+                                        ";
+                                    }
+                                }
+                            } else {
+                                // 값이 없을 때 실행할 내용
+                                echo "
+                                <div class='row_none'>
+                                결과값이 없습니다.
+                                </div>
+                            ";
+                            }
+
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</body>
+
+</html>
